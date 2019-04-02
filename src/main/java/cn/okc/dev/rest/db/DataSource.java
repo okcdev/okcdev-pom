@@ -7,17 +7,13 @@
 package cn.okc.dev.rest.db;
 
 import cn.okc.dev.rest.entity.Articles;
-import cn.okc.dev.rest.utils.JSONUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -28,10 +24,6 @@ import java.util.concurrent.ConcurrentMap;
 @Component
 public class DataSource<T>{
     static Logger logger = LoggerFactory.getLogger(DataSource.class);
-
-    private static final String TYPE_ARTICLES = "Articles";
-    private static final String TYPE_PROJECTS = "projects";
-    private static final String TYPE_OTHERS = "others";
 
     private static ConcurrentMap<String, List> data = new ConcurrentHashMap<>();
 
