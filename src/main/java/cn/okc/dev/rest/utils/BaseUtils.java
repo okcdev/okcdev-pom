@@ -23,8 +23,8 @@ public abstract class BaseUtils<T>{
     @Autowired
     DataSource<T> dataSource;
 
-    public List<T> list(T entity){
-        return dataSource.list(entity);
+    public List<T> listBy(T entity){
+        return dataSource.listBy(entity);
     }
 
     public T get(T entity, String id){

@@ -6,4 +6,5 @@ cn\okc\dev\rest\utils\BaseUtils.class
 cn\okc\dev\rest\utils\JSONUtils.class
 cn\okc\dev\rest\entity\Articles.class
 cn\okc\dev\rest\entity\ResultBean.class
+cn\okc\dev\rest\db\LoadData.class
 cn\okc\dev\rest\service\ArticlesService.class

@@ -29,10 +29,10 @@ public class DataSource<T>{
 
     static {
         //ArticlesDS articlesDS = new ArticlesDS();
-        data.put(Articles.class.getName(), ArticlesDS.getDate());
+        data.put(Articles.class.getName(), LoadData.getArticlesDate());
     }
 
-    public List<T> list(T entity){
+    public List<T> listBy(T entity){
         List<T> result = new ArrayList<>();
         try {
             List<T> tList = data.get(entity.getClass().getName());
@@ -42,9 +42,9 @@ public class DataSource<T>{
                 for (Field field : fields){
                     //logger.info("filed:{}", field.getName());
                     field.setAccessible(true);
-                    Object srcProperty = field.get(entity);
-                    Object dstProperty = field.get(t);
-                    if (srcProperty != null && dstProperty != null && srcProperty != dstProperty){
+                    Object srcField = field.get(entity);
+                    Object dstField = field.get(t);
+                    if (srcField != null && dstField != null && srcField != dstField){
                         i = 0;
                         break;
                     }
@@ -78,4 +78,8 @@ public class DataSource<T>{
         return null;
     }
 
+    public void refresh(T entity) {
+        data.remove(entity.getClass().getName());
+        data.put(entity.getClass().getName(),null);
+    }
 }
