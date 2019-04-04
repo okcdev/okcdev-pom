@@ -7,6 +7,7 @@
 package cn.okc.dev.rest.entity;
 
 import cn.okc.dev.rest.utils.JSONUtils;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,6 +28,7 @@ public class Articles {
     private String href;
     private String content;
     private String title;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date updateDate;
 
     public String getId() {
@@ -96,6 +98,7 @@ public class Articles {
     public Date getUpdateDate() {
         return updateDate;
     }
+
 
     public void setUpdateDate(Date updateDate) {
         this.updateDate = updateDate;

@@ -7,11 +7,17 @@
 package cn.okc.dev.rest.db;
 
 import cn.okc.dev.rest.entity.Articles;
+import cn.okc.dev.rest.entity.Projects;
+import cn.okc.dev.rest.entity.User;
+import cn.okc.dev.rest.utils.DataUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -22,36 +28,84 @@ import java.util.UUID;
 public class LoadData {
     static Logger logger = LoggerFactory.getLogger(LoadData.class);
 
-    public static List<Articles> getArticlesDate(){
+    //private static final String FILE_ARTICLES = "/home/fengtao.xue/okcdev/data/articles.txt";
+    private static final String FILE_ARTICLES = "./data/articles.txt";
+    private static final String TAB = "&";
+
+    /**
+     * 获取ArticlesList
+     * @return
+     */
+    public static List<Articles> getArticles(){
+        logger.info("******** loading articles......");
         List<Articles> articlesList = new ArrayList<>();
-        Articles articles1 = new Articles();
-        articles1.setId(UUID.randomUUID().toString().replace("-",""));
-        articles1.setStar(12);
-        articles1.setLike(33);
-        articles1.setMessage(6);
-        articles1.setOwner("xiaoshuai");
-        articles1.setHref("http://www.okcdev.cn");
-        articles1.setContent("我常常想，人是一种很悲剧的动物:当你慢慢懂得了一些事情时，你发现时间其实已经过去一大半了!" +
-                "我们总是在最美好的年华错过了应该那个年纪懂的一些道理。当我们懂得那个道理的时候，我们已经步入一个新的年龄段。这种滞后与生俱来，" +
-                "基因无法将一些经验传递给下一代，但是可以通过书籍来完成。然而更悲剧的是：当前辈用自己的一辈子得到的感悟写成的书告诉我们的道理， " +
-                "年少轻狂的我们根本不会领悟里面的生命哲学， 一定要自己趟一遍，才能感悟到，噢 ，原来书上写的是对的，该趟的，还是要趟一遍。这也有好有坏，" +
-                "因为时间在演进，世界也在变化。");
-        articles1.setTitle("前辈的忠告");
-        articles1.setUpdateDate(new Date());
-
-        Articles articles2 = new Articles();
-        articles2.setId(UUID.randomUUID().toString().replace("-",""));
-        articles2.setStar(12);
-        articles2.setLike(33);
-        articles2.setMessage(6);
-        articles2.setOwner("xiaoshuai");
-        articles2.setHref("http://www.okcdev.cn");
-        articles2.setContent("唐人街探案2。");
-        articles2.setTitle("前辈的忠告1");
-        articles2.setUpdateDate(new Date());
-
-        articlesList.add(articles1);
-        articlesList.add(articles2);
+        List<String> data = getDate(FILE_ARTICLES);
+        for (String line : data){
+            String[] strs = line.split(TAB);
+            Articles articles = new Articles();
+            try {
+                articles.setId(UUID.randomUUID().toString().replace("-", ""));
+                articles.setTitle(strs[0]);
+                articles.setStar(Integer.valueOf(strs[1]));
+                articles.setLike(Integer.valueOf(strs[2]));
+                articles.setMessage(Integer.valueOf(strs[3]));
+                articles.setOwner(strs[4]);
+                articles.setHref(strs[5]);
+                articles.setUpdateDate(DataUtils.parseDate(strs[6]));
+                articles.setContent(strs[7]);
+                articlesList.add(articles);
+            } catch (Exception e) {
+                logger.error("Error: {}\n{}", e.getMessage(), e.getStackTrace());
+            }
+        }
         return articlesList;
+    }
+
+    /**
+     * 获取Projects列表
+     * @return
+     */
+    public static List<Projects> getProjects() {
+        logger.info("******** loading projects......");
+        List<Projects> projectsList = new ArrayList<>();
+        return projectsList;
+    }
+
+    /**
+     * 获取user列表
+     * @return
+     */
+    public static List<User> getUser() {
+        logger.info("******** loading user......");
+        List<User> userList = new ArrayList<>();
+        return userList;
+    }
+
+    /**
+     * 读取本地文件
+     * @param filePath
+     * @return
+     */
+    public static List<String> getDate(String filePath){
+        List<String> data = new ArrayList<>();
+        //logger.debug("filePath:{}", filePath);
+        File file = new File(filePath);
+        if (!file.exists()){
+            logger.debug("******** {} not exist", filePath);
+            System.exit(0);
+        }
+        try {
+            //Reader reader = new FileReader(filePath);
+            InputStreamReader isr = new InputStreamReader(new FileInputStream(filePath),"UTF-8");
+            BufferedReader br = new BufferedReader(isr);
+            String line = br.readLine();
+            while ((line = br.readLine()) != null){
+                data.add(line);
+            }
+        }catch (Exception e){
+            logger.error("Error: {}\n{}", e.getMessage(), e.getStackTrace());
+            return null;
+        }
+        return data;
     }
 }

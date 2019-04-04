@@ -7,6 +7,8 @@
 package cn.okc.dev.rest.db;
 
 import cn.okc.dev.rest.entity.Articles;
+import cn.okc.dev.rest.entity.Projects;
+import cn.okc.dev.rest.entity.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -27,12 +29,24 @@ public class DataSource<T>{
 
     private static ConcurrentMap<String, List> data = new ConcurrentHashMap<>();
 
+    /**
+     * 初次加载所有数据，放入缓存
+     */
     static {
-        //ArticlesDS articlesDS = new ArticlesDS();
-        data.put(Articles.class.getName(), LoadData.getArticlesDate());
+        logger.info("******** first load data from native file......");
+        data.put(User.class.getName(), LoadData.getUser());
+        data.put(Articles.class.getName(), LoadData.getArticles());
+        data.put(Projects.class.getName(), LoadData.getProjects());
+        logger.info("******** load data from native file successfully");
     }
 
+    /**
+     * listBy,列表数据
+     * @param entity
+     * @return
+     */
     public List<T> listBy(T entity){
+        logger.info("listBy:{} \n entity:{}", entity.getClass().getName(), entity);
         List<T> result = new ArrayList<>();
         try {
             List<T> tList = data.get(entity.getClass().getName());
@@ -40,7 +54,6 @@ public class DataSource<T>{
                 int i = 0;
                 Field[] fields = entity.getClass().getDeclaredFields();
                 for (Field field : fields){
-                    //logger.info("filed:{}", field.getName());
                     field.setAccessible(true);
                     Object srcField = field.get(entity);
                     Object dstField = field.get(t);
@@ -62,7 +75,14 @@ public class DataSource<T>{
         return result;
     }
 
+    /**
+     * get,跟进id获取详情
+     * @param entity
+     * @param id
+     * @return
+     */
     public T get(T entity,String id) {
+        logger.info("get:{},{}", entity.getClass().getName(),id);
         try {
             List<T> tList = data.get(entity.getClass().getName());
             for (T t : tList){
@@ -78,8 +98,12 @@ public class DataSource<T>{
         return null;
     }
 
-    public void refresh(T entity) {
-        data.remove(entity.getClass().getName());
-        data.put(entity.getClass().getName(),null);
+    /**
+     * 刷新缓存
+     */
+    public void refresh() {
+        logger.info("******** refresh all data");
+        data.clear();
+        data.put(Articles.class.getName(), LoadData.getArticles());
     }
 }

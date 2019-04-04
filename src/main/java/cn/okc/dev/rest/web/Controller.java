@@ -34,7 +34,7 @@ public class Controller {
     @RequestMapping("/articles/list")
     public ResultBean<List<Articles>> list(){
         Articles articles = new Articles();
-        articles.setTitle("前辈的忠告1");
+        //articles.setTitle("前辈的忠告1");
         return new ResultBean<>(ResultBean.STATUS_SUCCESS, "调用成功", articlesService.listBy(articles));
     }
 
