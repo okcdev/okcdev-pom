@@ -104,6 +104,8 @@ public class DataSource<T>{
     public void refresh() {
         logger.info("******** refresh all data");
         data.clear();
+        data.put(User.class.getName(), LoadData.getUser());
         data.put(Articles.class.getName(), LoadData.getArticles());
+        data.put(Projects.class.getName(), LoadData.getProjects());
     }
 }
